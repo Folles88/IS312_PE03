@@ -1,0 +1,129 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>PE03 - Bouncing Ball Screensaver</title>
+
+    <style>
+        body {
+            background-color: black;
+            color: white;
+            text-align: center;
+            font-family: Arial, sans-serif;
+        }
+        canvas {
+            background-color: black;
+            display: block;
+            margin: 0 auto;
+        }
+    </style>
+</head>
+<body>
+    <h1>Bouncing Ball Screensaver</h1>
+
+    <canvas id="canvas" width="600" height="400" style="border: 2px solid white;"></canvas>
+
+    <script>
+        const canvas = document.getElementById("canvas");
+        const ctx = canvas.getContext("2d");
+
+        // Ball data structure
+        function createBall(x, y, vx, vy, radius, color){
+            return{
+                x: x,
+                y: y,
+                vx: vx,
+                vy: vy,
+                radius: radius,
+                color: color
+            };
+        }
+        
+        // Create our original array of balls
+        const balls = [
+            createBall(100, 100, 2, 3, 20, "red"),
+            createBall(200, 150, -3, 2, 15, "orange"),
+            createBall(300, 200, 4, 1, 25, "yellow"),
+            createBall(400, 250, -2, -2, 10, "green"),
+            createBall(500, 300, 3, -3, 17.5, "blue"),
+            createBall(150, 300, -2, 4, 15, "purple"),
+            createBall(250, 100, 3, -2, 20, "pink"),
+            createBall(350, 300, -4, -3, 12, "cyan"),
+            createBall(450, 150, 2, 4, 18, "magenta"),
+            createBall(550, 250, -3, 1, 15, "lime")
+        ];
+
+        // Make a copy of our original balls
+        const originalBalls = balls.slice();
+
+        // Create more balls at 1.5x the speed
+        for (const ball of originalBalls) {
+            const newBall = createBall(ball.x, ball.y, ball.vx * 1.5, ball.vy * 1.5, ball.radius, ball.color);
+            balls.push(newBall);
+        }
+
+        // Create more balls at 2x the speed
+        for (const ball of originalBalls) {
+            const newBall = createBall(ball.x, ball.y, ball.vx * 2, ball.vy * 2, ball.radius, ball.color);
+            balls.push(newBall);
+        }
+        
+        // Create more balls at 0.5x the speed
+        for (const ball of originalBalls) {
+            const newBall = createBall(ball.x, ball.y, ball.vx * 0.5, ball.vy * 0.5, ball.radius, ball.color);
+            balls.push(newBall);
+        }
+
+        // Create more balls at 0.25x the speed
+        for (const ball of originalBalls) {
+            const newBall = createBall(ball.x, ball.y, ball.vx * 0.25, ball.vy * 0.25, ball.radius, ball.color);
+            balls.push(newBall);
+        }
+
+        // Draw function
+        function drawBall() {
+            for (const ball of balls) {
+                ctx.beginPath();
+                ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI * 2);
+                ctx.fillStyle = ball.color;
+                ctx.fill();
+                ctx.closePath();
+            }
+        }
+
+        // Position and collision function
+        function updatePosition() {
+            for (const ball of balls) {
+                ball.x += ball.vx;
+                ball.y += ball.vy;
+
+                // Bounce off the left and right walls
+                if (ball.x + ball.radius >= canvas.width ||
+                    ball.x - ball.radius <= 0) {
+                    ball.vx = -ball.vx;
+                }
+
+                // Bounce off the top and bottom walls
+                if (ball.y + ball.radius >= canvas.height ||
+                    ball.y - ball.radius <= 0) {
+                    ball.vy = -ball.vy;
+                }
+            }
+        }
+
+        // Animation engine
+        function draw() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            drawBall();
+            updatePosition();
+
+            requestAnimationFrame(draw);
+        }
+
+        // Start the animation
+        draw();
+    </script>
+</body>
+</html>
